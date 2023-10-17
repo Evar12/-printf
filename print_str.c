@@ -1,7 +1,7 @@
 #include "main.h"
 /**
- * printf_str - print a string
- * @val: argument
+ * str - print a string
+ * @string: argument
  * Return: Return the length of string
  */
 int str(va_list string)
