@@ -1,73 +1,76 @@
+#include "main.h"
 #include <stdio.h>
-#include <stdarg.h>
-
-void print_buffer(char buffer[], int *buff_ind);
 
 /**
- * _printf - Printf function
- * @format: format.
- * Return: Printed chars.
+ * print_op - function to check which specifier to print
+ * @format: string being passed
+ * @print_arr: array of struct ops
+ * @list: list of arguments to print
+ * Return: numb of char to be printed
  */
-int _printf(const char *format, ...)
+int print_op(const char *format, fmt_t *print_arr, va_list list)
 {
-	int printed_chars = 0, buff_ind = 0;
-	va_list args;
-	char buffer[BUFF_SIZE];
+	char a;
+	int count = 0, b = 0, c = 0;
 
-	if (format == NULL)
-		return (-1);
-
-	va_start(args, format);
-
-	for (int i = 0; format[i] != '\0'; i++)
+	a = format[b];
+	while (a != '\0')
 	{
-		if (format[i] != '%')
+		if (a == '%')
 		{
-			buffer[buff_ind++] = format[i];
-			if (buff_ind == BUFF_SIZE)
-			{
-				print_buffer(buffer, &buff_ind);
-				printed_chars += buff_ind;
-			}
+			c = 0;
+			b++;
+			a = format[b];
+			while (print_arr[c].type != NULL &&
+			       a != *(print_arr[c].type))
+				c++;
+			if (print_arr[c].type != NULL)
+				count = count + print_arr[c].f(list);
 			else
 			{
-				printed_chars++;
+				if (a == '\0')
+					return (-1);
+				if (a != '%')
+					count += _putchar('%');
+				count += _putchar(a);
 			}
 		}
 		else
-		{
-			print_buffer(buffer, &buff_ind);
-			i++;
-			if (format[i] == '\0')
-
-			switch (format[i])
-			{
-			printed_chars += printf("%d", va_arg(args, int));
-			printed_chars += printf("%s", va_arg(args, char *));
-			printed_chars += printf("%c", va_arg(args, int));
-			putchar(format[i]);
-			printed_chars++;
-			return (-1);
-			}
-		}
+			count += _putchar(a);
+		b++;
+		a = format[b];
 	}
-
-	print_buffer(buffer, &buff_ind);
-	va_end(args);
-
-	return (printed_chars);
+	return (count);
 }
 
 /**
- * print_buffer - If the buffer exists, output its contents.
- * @buffer: Array of chars
- * @buff_ind: Next character index, representing buffer length.
+ * _printf - prints output according to format
+ * @format: string being passed
+ * Return: char to be printed
  */
-void print_buffer(char buffer[], int *buff_ind)
+int _printf(const char *format, ...)
 {
-	if (*buff_ind > 0)
-		while (1, &buffer[0], *buff_ind);
+	va_list list;
+	int a = 0;
 
-		*buff_ind = 0;
-	}
+	fmt_t ops[] = {
+		{"c", ch},
+		{"s", str},
+		{"d", _int},
+		{"b", _bin},
+		{"i", _int},
+		{"u", _ui},
+		{"o", _oct},
+		{"x", _hex_l},
+		{"X", _hex_u},
+		{"R", _rot13},
+		{NULL, NULL}
+	};
+
+	if (format == NULL)
+		return (-1);
+	va_start(list, format);
+	a = print_op(format, ops, list);
+	va_end(list);
+	return (a);
 }
